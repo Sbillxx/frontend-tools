@@ -41,7 +41,7 @@ def serialize_gemini_tools(tools: List[CanonicalToolDefinition]) -> List[types.T
     ]
     return [types.Tool(function_declarations=declarations)]
 
-
+# sas
 def _get_gemini_api_model_name(model: Llm) -> str:
     if model in [
         Llm.GEMINI_3_FLASH_PREVIEW_HIGH,
