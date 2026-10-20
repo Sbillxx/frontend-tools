@@ -7,7 +7,13 @@ NUM_VARIANTS_VIDEO = 2
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY", None)
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", None)
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", None)
+GEMINI_MODEL = os.environ.get("GEMINI_MODEL", "").strip() or None
+GEMINI_THINKING_LEVEL = os.environ.get("GEMINI_THINKING_LEVEL", "").strip() or None
 OPENAI_BASE_URL = os.environ.get("OPENAI_BASE_URL", None)
+
+# Screenshot-related
+SCREENSHOTONE_API_KEY = os.environ.get("SCREENSHOTONE_API_KEY", None)
+SCREENSHOTONE_SECRET_KEY = os.environ.get("SCREENSHOTONE_SECRET_KEY", None)
 
 # Image generation (optional)
 REPLICATE_API_KEY = os.environ.get("REPLICATE_API_KEY", None)

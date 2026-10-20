@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import httpx
 from urllib.parse import urlparse
+import config
 
 router = APIRouter()
 
@@ -70,12 +71,12 @@ async def capture_screenshot(
         if response.status_code == 200 and response.content:
             return response.content
         else:
-            raise Exception("Error taking screenshot")
+            raise Exception(f"ScreenshotOne error ({response.status_code}): {response.text}")
 
 
 class ScreenshotRequest(BaseModel):
     url: str
-    apiKey: str
+    apiKey: str | None = None
 
 
 class ScreenshotResponse(BaseModel):
@@ -84,9 +85,15 @@ class ScreenshotResponse(BaseModel):
 
 @router.post("/api/screenshot")
 async def app_screenshot(request: ScreenshotRequest):
-    # Extract the URL from the request body
+    # Extract the URL and API key from the request body or environment
     url = request.url
-    api_key = request.apiKey
+    api_key = request.apiKey or config.SCREENSHOTONE_API_KEY
+
+    if not api_key:
+        raise HTTPException(
+            status_code=400,
+            detail="ScreenshotOne API key is required. Set SCREENSHOTONE_API_KEY in .env or provide it in Settings.",
+        )
 
     try:
         # Normalize the URL
@@ -99,9 +106,12 @@ async def app_screenshot(request: ScreenshotRequest):
         data_url = bytes_to_data_url(image_bytes, "image/png")
 
         return ScreenshotResponse(url=data_url)
+    except HTTPException:
+        raise
     except ValueError as e:
         # Handle URL normalization errors
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         # Handle other errors
         raise HTTPException(status_code=500, detail=f"Error capturing screenshot: {str(e)}")
+

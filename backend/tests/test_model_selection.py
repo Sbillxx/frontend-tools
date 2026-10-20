@@ -24,10 +24,10 @@ class TestModelSelectionAllKeys:
         )
 
         expected = [
-            Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
+            Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
             Llm.GPT_5_6_SOL_HIGH,
             Llm.CLAUDE_OPUS_5_HIGH,
-            Llm.GEMINI_3_1_PRO_PREVIEW_LOW,
+            Llm.GEMINI_3_5_FLASH_LITE_LOW,
         ]
         assert models == expected
 
@@ -44,7 +44,7 @@ class TestModelSelectionAllKeys:
 
         expected = [
             Llm.CLAUDE_OPUS_5_5_MEDIUM,
-            Llm.GEMINI_3_FLASH_PREVIEW_HIGH,
+            Llm.GEMINI_3_5_FLASH_LITE_HIGH,
             Llm.CLAUDE_OPUS_5_5_XHIGH,
             Llm.GPT_6_1_SOL_HIGH,
         ]
@@ -62,7 +62,7 @@ class TestModelSelectionAllKeys:
         )
 
         expected = [
-            Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
+            Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
             Llm.GPT_6_1_SOL_LOW,
         ]
         assert models == expected
@@ -79,7 +79,7 @@ class TestModelSelectionAllKeys:
         )
 
         expected = [
-            Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
+            Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
             Llm.GPT_6_1_SOL_LOW,
         ]
         assert models == expected
@@ -96,8 +96,8 @@ class TestModelSelectionAllKeys:
         )
 
         expected = [
-            Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
-            Llm.GEMINI_3_1_PRO_PREVIEW_HIGH,
+            Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
+            Llm.GEMINI_3_5_FLASH_LITE_HIGH,
         ]
         assert models == expected
 
@@ -113,8 +113,8 @@ class TestModelSelectionAllKeys:
         )
 
         expected = [
-            Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
-            Llm.GEMINI_3_1_PRO_PREVIEW_HIGH,
+            Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
+            Llm.GEMINI_3_5_FLASH_LITE_HIGH,
         ]
         assert models == expected
 

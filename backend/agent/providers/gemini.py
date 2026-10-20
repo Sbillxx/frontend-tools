@@ -18,6 +18,7 @@ from agent.providers.base import (
     ProviderTurn,
     StreamEvent,
 )
+import config
 from costs.pricing import MODEL_PRICING
 from costs.token_usage import TokenUsage
 from agent.tools import CanonicalToolDefinition, ToolCall
@@ -62,6 +63,20 @@ def _get_gemini_api_model_name(model: Llm) -> str:
     ]:
         return "gemini-3.6-flash"
     if model in [
+        Llm.GEMINI_3_8_FLASH_HIGH,
+        Llm.GEMINI_3_8_FLASH_MEDIUM,
+        Llm.GEMINI_3_8_FLASH_LOW,
+        Llm.GEMINI_3_8_FLASH_MINIMAL,
+    ]:
+        return "gemini-3.8-flash"
+    if model in [
+        Llm.GEMINI_3_5_FLASH_LITE_HIGH,
+        Llm.GEMINI_3_5_FLASH_LITE_MEDIUM,
+        Llm.GEMINI_3_5_FLASH_LITE_LOW,
+        Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
+    ]:
+        return "gemini-3.5-flash-lite"
+    if model in [
         Llm.GEMINI_3_1_PRO_PREVIEW_HIGH,
         Llm.GEMINI_3_1_PRO_PREVIEW_MEDIUM,
         Llm.GEMINI_3_1_PRO_PREVIEW_LOW,
@@ -76,24 +91,32 @@ def _get_thinking_level_for_model(model: Llm) -> str:
         Llm.GEMINI_3_1_PRO_PREVIEW_HIGH,
         Llm.GEMINI_3_5_FLASH_HIGH,
         Llm.GEMINI_3_6_FLASH_HIGH,
+        Llm.GEMINI_3_8_FLASH_HIGH,
+        Llm.GEMINI_3_5_FLASH_LITE_HIGH,
     ]:
         return "high"
     if model in [
         Llm.GEMINI_3_1_PRO_PREVIEW_LOW,
         Llm.GEMINI_3_5_FLASH_LOW,
         Llm.GEMINI_3_6_FLASH_LOW,
+        Llm.GEMINI_3_8_FLASH_LOW,
+        Llm.GEMINI_3_8_FLASH_MINIMAL,
+        Llm.GEMINI_3_5_FLASH_LITE_LOW,
     ]:
         return "low"
     if model in [
         Llm.GEMINI_3_1_PRO_PREVIEW_MEDIUM,
         Llm.GEMINI_3_5_FLASH_MEDIUM,
         Llm.GEMINI_3_6_FLASH_MEDIUM,
+        Llm.GEMINI_3_8_FLASH_MEDIUM,
+        Llm.GEMINI_3_5_FLASH_LITE_MEDIUM,
     ]:
         return "medium"
     if model in [
         Llm.GEMINI_3_FLASH_PREVIEW_MINIMAL,
         Llm.GEMINI_3_5_FLASH_MINIMAL,
         Llm.GEMINI_3_6_FLASH_MINIMAL,
+        Llm.GEMINI_3_5_FLASH_LITE_MINIMAL,
     ]:
         return "minimal"
     return "high"
@@ -306,10 +329,11 @@ class GeminiProviderSession(ProviderSession):
         self._tools = tools
         self._total_usage = TokenUsage()
         self._recorder = recorder
+        api_model_name = config.GEMINI_MODEL or _get_gemini_api_model_name(model)
         self._prompt_report_logger = PromptReportLogger(
             provider="gemini",
             model=model,
-            api_model_name=_get_gemini_api_model_name(model),
+            api_model_name=api_model_name,
         )
 
         self._system_prompt = str(prompt_messages[0].get("content", ""))
@@ -318,9 +342,11 @@ class GeminiProviderSession(ProviderSession):
         ]
 
     async def stream_turn(self, on_event: EventSink) -> ProviderTurn:
-        thinking_level = _get_thinking_level_for_model(self._model)
-        api_model_name = _get_gemini_api_model_name(self._model)
-        config = types.GenerateContentConfig(
+        thinking_level = (
+            config.GEMINI_THINKING_LEVEL or _get_thinking_level_for_model(self._model)
+        )
+        api_model_name = config.GEMINI_MODEL or _get_gemini_api_model_name(self._model)
+        generation_config = types.GenerateContentConfig(
             temperature=1.0,
             max_output_tokens=50000,
             system_instruction=self._system_prompt,
@@ -334,7 +360,7 @@ class GeminiProviderSession(ProviderSession):
         request_payload = {
             "model": api_model_name,
             "contents": self._contents,
-            "config": config,
+            "config": generation_config,
         }
         self._prompt_report_logger.record_request(request_payload)
         if self._recorder is not None:
@@ -345,7 +371,7 @@ class GeminiProviderSession(ProviderSession):
         stream = await self._client.aio.models.generate_content_stream(
             model=api_model_name,
             contents=cast(Any, self._contents),
-            config=config,
+            config=generation_config,
         )
 
         state = GeminiParseState()
@@ -378,7 +404,10 @@ class GeminiProviderSession(ProviderSession):
         )
 
     def total_cost_usd(self) -> Optional[float]:
-        pricing = MODEL_PRICING.get(_get_gemini_api_model_name(self._model))
+        api_model_name = config.GEMINI_MODEL or _get_gemini_api_model_name(self._model)
+        pricing = MODEL_PRICING.get(api_model_name)
+        if pricing is None:
+            pricing = MODEL_PRICING.get("gemini-3.5-flash-lite")
         if pricing is None:
             return None
         return self._total_usage.cost(pricing)

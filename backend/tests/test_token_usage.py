@@ -290,7 +290,9 @@ class TestModelPricing:
             "claude-opus-5",
             "claude-opus-4-8",
             "gemini-3.5-flash",
+            "gemini-3.5-flash-lite",
             "gemini-3.6-flash",
+            "gemini-3.8-flash",
         ]:
             assert name in MODEL_PRICING, f"missing pricing for {name}"
 

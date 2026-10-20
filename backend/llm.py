@@ -64,6 +64,14 @@ class Llm(Enum):
     GEMINI_3_6_FLASH_MEDIUM = "gemini-3.6-flash (medium thinking)"
     GEMINI_3_6_FLASH_LOW = "gemini-3.6-flash (low thinking)"
     GEMINI_3_6_FLASH_MINIMAL = "gemini-3.6-flash (minimal thinking)"
+    GEMINI_3_8_FLASH_HIGH = "gemini-3.8-flash (high thinking)"
+    GEMINI_3_8_FLASH_MEDIUM = "gemini-3.8-flash (medium thinking)"
+    GEMINI_3_8_FLASH_LOW = "gemini-3.8-flash (low thinking)"
+    GEMINI_3_8_FLASH_MINIMAL = "gemini-3.8-flash (minimal thinking)"
+    GEMINI_3_5_FLASH_LITE_HIGH = "gemini-3.5-flash-lite (high thinking)"
+    GEMINI_3_5_FLASH_LITE_MEDIUM = "gemini-3.5-flash-lite (medium thinking)"
+    GEMINI_3_5_FLASH_LITE_LOW = "gemini-3.5-flash-lite (low thinking)"
+    GEMINI_3_5_FLASH_LITE_MINIMAL = "gemini-3.5-flash-lite (minimal thinking)"
 
 
 class Completion(TypedDict):
@@ -135,6 +143,14 @@ MODEL_PROVIDER: dict[Llm, str] = {
     Llm.GEMINI_3_6_FLASH_MEDIUM: "gemini",
     Llm.GEMINI_3_6_FLASH_LOW: "gemini",
     Llm.GEMINI_3_6_FLASH_MINIMAL: "gemini",
+    Llm.GEMINI_3_8_FLASH_HIGH: "gemini",
+    Llm.GEMINI_3_8_FLASH_MEDIUM: "gemini",
+    Llm.GEMINI_3_8_FLASH_LOW: "gemini",
+    Llm.GEMINI_3_8_FLASH_MINIMAL: "gemini",
+    Llm.GEMINI_3_5_FLASH_LITE_HIGH: "gemini",
+    Llm.GEMINI_3_5_FLASH_LITE_MEDIUM: "gemini",
+    Llm.GEMINI_3_5_FLASH_LITE_LOW: "gemini",
+    Llm.GEMINI_3_5_FLASH_LITE_MINIMAL: "gemini",
 }
 
 # Convenience sets for membership checks

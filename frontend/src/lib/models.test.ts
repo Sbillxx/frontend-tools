@@ -23,6 +23,34 @@ describe("Gemini 3.6 Flash", () => {
   });
 });
 
+describe("Gemini 3.8 Flash", () => {
+  test.each([
+    [CodeGenerationModel.GEMINI_3_8_FLASH_MINIMAL, "minimal"],
+    [CodeGenerationModel.GEMINI_3_8_FLASH_LOW, "low"],
+    [CodeGenerationModel.GEMINI_3_8_FLASH_MEDIUM, "medium"],
+    [CodeGenerationModel.GEMINI_3_8_FLASH_HIGH, "high"],
+  ])("exposes the %s variant", (model, level) => {
+    expect(model).toBe(`gemini-3.8-flash (${level} thinking)`);
+    expect(CODE_GENERATION_MODEL_DESCRIPTIONS[model].name).toBe(
+      `Gemini 3.8 Flash (${level})`
+    );
+  });
+});
+
+describe("Gemini 3.5 Flash Lite", () => {
+  test.each([
+    [CodeGenerationModel.GEMINI_3_5_FLASH_LITE_MINIMAL, "minimal"],
+    [CodeGenerationModel.GEMINI_3_5_FLASH_LITE_LOW, "low"],
+    [CodeGenerationModel.GEMINI_3_5_FLASH_LITE_MEDIUM, "medium"],
+    [CodeGenerationModel.GEMINI_3_5_FLASH_LITE_HIGH, "high"],
+  ])("exposes the %s variant", (model, level) => {
+    expect(model).toBe(`gemini-3.5-flash-lite (${level} thinking)`);
+    expect(CODE_GENERATION_MODEL_DESCRIPTIONS[model].name).toBe(
+      `Gemini 3.5 Flash Lite (${level})`
+    );
+  });
+});
+
 describe("getVariantLabel", () => {
   test("image/create: Flash-minimal -> Fast; Pro-high & GPT-5.5 high -> Max", () => {
     const ctx = { inputMode: "image" as const, generationType: "create" as const };

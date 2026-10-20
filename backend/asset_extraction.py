@@ -14,8 +14,18 @@ from google.genai import types
 from PIL import Image, ImageOps
 from pydantic import BaseModel, Field, ValidationError
 
+import config
 
-ASSET_EXTRACTION_GEMINI_MODEL = "gemini-3.6-flash"
+
+ASSET_EXTRACTION_GEMINI_MODEL = config.GEMINI_MODEL or "gemini-3.5-flash-lite"
+
+
+def _get_asset_extraction_thinking_level() -> types.ThinkingLevel:
+    if config.GEMINI_THINKING_LEVEL:
+        level_str = config.GEMINI_THINKING_LEVEL.strip().upper()
+        if hasattr(types.ThinkingLevel, level_str):
+            return getattr(types.ThinkingLevel, level_str)
+    return types.ThinkingLevel.MINIMAL
 MAX_ASSETS_PER_GEMINI_REQUEST = 25
 DEFAULT_ASSET_MEDIA_RESOLUTION = (
     types.PartMediaResolutionLevel.MEDIA_RESOLUTION_ULTRA_HIGH
@@ -281,7 +291,7 @@ async def _locate_asset_batch(
             response_mime_type="application/json",
             response_schema=AssetDetectionBatch,
             thinking_config=types.ThinkingConfig(
-                thinking_level=types.ThinkingLevel.MINIMAL
+                thinking_level=_get_asset_extraction_thinking_level()
             ),
         ),
     )
