@@ -39,6 +39,7 @@ import SettingsTab from "./components/settings/SettingsTab";
 import DesignSystemsModal from "./components/settings/DesignSystemsModal";
 import { AiEditCommit, Commit } from "./components/commits/types";
 import { createCommit } from "./components/commits/utils";
+import BackendStatusIndicator from "./components/status/BackendStatusIndicator";
 
 function App() {
   const {
@@ -795,6 +796,9 @@ function App() {
           onOpenChange={handleTermDialogOpenChange}
         />
       )}
+
+      {/* Live Backend Connection Status Indicator */}
+      <BackendStatusIndicator />
 
       {/* Icon strip - always visible */}
       <div
